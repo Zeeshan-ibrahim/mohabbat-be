@@ -7,16 +7,16 @@ import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: prisma, private jwtService: JwtService) {}
+  constructor(private jwtService: JwtService) {}
 
   async signup(signupDto: SignupDto) {
-    const existingUser = await this.prisma.user.findUnique({ where: { email: signupDto.email } });
+    const existingUser = await prisma.user.findUnique({ where: { email: signupDto.email } });
     if (existingUser) {
       throw new BadRequestException('Email already exists');
     }
 
     const hashedPassword = await bcrypt.hash(signupDto.password, 10);
-    await this.prisma.user.create({
+    await prisma.user.create({
       data: {
         name: signupDto.name,
         email: signupDto.email,
@@ -28,7 +28,7 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto) {
-    const user = await this.prisma.user.findUnique({ where: { email: loginDto.email } });
+    const user = await prisma.user.findUnique({ where: { email: loginDto.email } });
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
     const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
