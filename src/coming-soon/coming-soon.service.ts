@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { prisma } from '../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ComingSoonService {
-    constructor() {}
+    constructor(private prisma: PrismaService) {}
 
   async registerEmail(email: string) {
     try{
-
-        const existing = await prisma.preSignedUsers.findUnique({
+        // Access the preSignedUsers model - PrismaService extends PrismaClient
+        const existing = await (this.prisma as any).preSignedUsers.findUnique({
             where: { email },
         });
   
@@ -16,7 +16,7 @@ export class ComingSoonService {
             return { message: 'Email already registered', success: true };
         }
         
-        const user = await prisma.preSignedUsers.create({
+        const user = await (this.prisma as any).preSignedUsers.create({
             data: { email },
         });
         
