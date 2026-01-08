@@ -19,3 +19,8 @@ model User {
   password  String
   createdAt DateTime @default(now())
 }
+
+model PreSignedUsers {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+}

@@ -5,6 +5,11 @@ import { Request, Response, NextFunction } from 'express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors({
+    origin: 'http://localhost:3000', // your frontend URL
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  });
+
   // Middleware to log every API request
   app.use((req: Request, res: Response, next: NextFunction) => {
     const start = Date.now();
